@@ -32,29 +32,29 @@ jobs:
 
     - name: Lint Kubernetes Manifests
       run: |
-        kubectl apply --dry-run=client -f nginx.yaml -n monitoring
-        kubectl apply --dry-run=client -f nginx.yaml -n monitoring
+        kubectl apply --dry-run=client -f nginx.yaml
+        kubectl apply --dry-run=client -f service.yaml 
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build-and-test
+  # deploy:
+  #   runs-on: ubuntu-latest
+  #   needs: build-and-test
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v2
 
-    - name: Set up Kubernetes
-      uses: azure/setup-kubectl@v1
-      with:
-        version: 'v1.20.0'
+  #   - name: Set up Kubernetes
+  #     uses: azure/setup-kubectl@v1
+  #     with:
+  #       version: 'v1.20.0'
 
-    - name: Authenticate to Kubernetes cluster
-      env:
-        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-      run: |
-        echo "$KUBE_CONFIG_DATA" | base64 --decode > $HOME/.kube/config
+  #   - name: Authenticate to Kubernetes cluster
+  #     env:
+  #       KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+  #     run: |
+  #       echo "$KUBE_CONFIG_DATA" | base64 --decode > $HOME/.kube/config
 
-    - name: Deploy to Staging
-      run: |
-        kubectl apply -f nginx.yaml -n monitoring
-        kubectl apply -f nginx.yaml -n monitoring
+  #   - name: Deploy to Staging
+  #     run: |
+  #       kubectl apply -f nginx.yaml -n monitoring
+  #       kubectl apply -f service.yaml -n monitoring
