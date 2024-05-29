@@ -32,8 +32,8 @@ jobs:
 
     - name: Lint Kubernetes Manifests
       run: |
-        kubectl apply --dry-run=client -f nginx.yaml
-        kubectl apply --dry-run=client -f nginx.yaml
+        kubectl apply --dry-run=client -f nginx.yaml -n monitoring
+        kubectl apply --dry-run=client -f nginx.yaml -n monitoring
 
   # deploy:
   #   runs-on: ubuntu-latest
