@@ -1,0 +1,60 @@
+# This is a basic workflow that is manually triggered
+
+name: Staging
+
+# Controls when the action will run. Workflow runs when manually triggered using the UI
+# or API.
+on:
+  workflow_dispatch
+
+# name: CI and CD Pipeline
+
+# on:
+#   push:
+#     branches:
+#       - main
+#   pull_request:
+#     branches:
+#       - main
+
+jobs:
+  # build-and-test:
+  #   runs-on: [self-hosted, Linux, X64, qoala] 
+
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v2
+
+  #   - name: Set up Kubernetes
+  #     uses: azure/setup-kubectl@v1
+  #     with:
+  #       version: 'v1.20.0'
+
+  #   - name: Dry run test
+  #     run: |
+  #       kubectl apply --dry-run=client -f nginx.yaml -n monitoring
+  #       kubectl apply --dry-run=client -f service.yaml -n monitoring
+
+  deploy:
+    runs-on: [self-hosted, Linux, X64, qoala]
+    # needs: build-and-test
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Kubernetes
+      uses: azure/setup-kubectl@v1
+      with:
+        version: 'v1.20.0'
+
+    - name: Authenticate to Kubernetes cluster
+      env:
+        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+      run: |
+        echo "$KUBE_CONFIG_DATA" | base64 --decode > /home/azureuser/.kube/config
+
+    - name: Deploy to Staging
+      run: |
+        kubectl apply -f nginx.yaml -n monitoring
+        kubectl apply -f service.yaml -n monitoring
